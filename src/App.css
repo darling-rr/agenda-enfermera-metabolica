@@ -978,3 +978,21 @@ footer svg {
     margin-bottom: 70px;
   }
 }
+
+.ctaText {
+  margin: 16px 0;
+  font-weight: 600;
+  color: #2e6b38;
+  background: #f3f8ef;
+  padding: 14px;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.payButton:disabled {
+  background: #cfd8d3;
+  color: #8b948f;
+  cursor: not-allowed;
+  box-shadow: none;
+}

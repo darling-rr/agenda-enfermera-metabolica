@@ -57,6 +57,8 @@ function App() {
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [patient, setPatient] = useState({ name: "", phone: "", email: "" });
+  const isFormValid =
+  patient.name && patient.phone && patient.email && selectedTime;
 
   const price = selectedMode === "Presencial" ? "$40.000" : "$30.000";
   const paymentUrl = paymentLinks[selectedMode];
@@ -403,9 +405,22 @@ useEffect(() => {
             <strong>{price}</strong>
           </div>
 
-          <button onClick={saveAppointment} disabled={isSaving} className="payButton">
-            <Lock size={19} /> {isSaving ? "Reservando..." : "Reservar y pagar"}
-          </button>
+          <p className="ctaText">
+  👉 Completa tus datos y presiona el botón para reservar tu hora y continuar al pago
+</p>
+
+        <button
+  onClick={saveAppointment}
+  disabled={!isFormValid || isSaving}
+  className="payButton"
+>
+  <Lock size={19} />
+  {isSaving
+    ? "Reservando..."
+    : !isFormValid
+    ? "Completa tus datos"
+    : "Confirmar hora y pagar"}
+</button>
           <p className="secureText">Luego envía el comprobante para confirmar tu cupo</p>
 
           <div className="safeBox">
