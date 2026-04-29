@@ -301,7 +301,7 @@ function App() {
 
       <footer>
         <div><HeartPulse size={22} /> Enfermera Metabólica</div>
-        <div>¿Dudas? Escríbeme por WhatsApp: +569 XXXXXXXX</div>
+        <div>¿Dudas? Escríbeme por WhatsApp: +569 77415299</div>
         <div>Instagram: @enfermera.metabolica</div>
       </footer>
     </main>
