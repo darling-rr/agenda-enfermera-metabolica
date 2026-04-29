@@ -1,0 +1,848 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: #f8f5ef;
+  color: #1f2a24;
+}
+
+button,
+a {
+  font-family: inherit;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at top right, #dfead7 0, transparent 32%),
+    linear-gradient(180deg, #fbf8f3 0%, #ffffff 100%);
+}
+
+.hero {
+  max-width: 1180px;
+  margin: 0 auto 28px;
+}
+
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  color: #326b3d;
+  font-weight: 600;
+  margin-bottom: 28px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 30px;
+  align-items: center;
+}
+
+.heroText h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(44px, 6vw, 74px);
+  line-height: 0.95;
+  margin: 0 0 20px;
+  color: #17211b;
+}
+
+.heroText h1 span {
+  color: #3a7d44;
+  font-style: italic;
+}
+
+.heroText p {
+  font-size: 18px;
+  color: #5e665f;
+  max-width: 680px;
+  line-height: 1.6;
+}
+
+.featuresTop {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 32px;
+}
+
+.featuresTop div {
+  display: grid;
+  gap: 4px;
+  color: #2e6b38;
+}
+
+.featuresTop strong {
+  color: #1f2a24;
+  font-size: 14px;
+}
+
+.featuresTop small {
+  color: #68706a;
+}
+
+.metabolicVisual {
+  display: flex;
+  justify-content: center;
+}
+
+.circleOrbit {
+  width: 310px;
+  height: 310px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #eef5e9, #fff8ef);
+  border: 1px solid #dfe8d7;
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow: 0 18px 45px rgba(41, 78, 49, 0.12);
+}
+
+.bodyIcon {
+  color: #326b3d;
+}
+
+.orbitIcon {
+  position: absolute;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #3a7d44;
+  color: white;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 25px rgba(58, 125, 68, 0.25);
+}
+
+.one { top: 30px; right: 62px; }
+.two { right: 26px; bottom: 90px; }
+.three { left: 38px; bottom: 72px; }
+.four { left: 58px; top: 52px; }
+
+.bookingGrid {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.bookingCard,
+.summaryCard,
+.whySection,
+footer {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #e9e2d8;
+  border-radius: 28px;
+  box-shadow: 0 16px 35px rgba(46, 58, 45, 0.08);
+}
+
+.bookingCard {
+  padding: 30px;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stepHeader span {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #3a7d44;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+}
+
+.stepHeader h2 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.modeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.modeCard {
+  position: relative;
+  border: 1px solid #e3dcd2;
+  border-radius: 18px;
+  padding: 26px 18px;
+  background: white;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s ease;
+}
+
+.modeCard:hover,
+.modeCard.active {
+  border-color: #3a7d44;
+  box-shadow: 0 12px 28px rgba(58, 125, 68, 0.12);
+  transform: translateY(-2px);
+}
+
+.modeCard .check {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #3a7d44;
+  color: white;
+  border-radius: 50%;
+  width: 27px;
+  height: 27px;
+  display: none;
+  place-items: center;
+}
+
+.modeCard.active .check {
+  display: grid;
+}
+
+.iconBubble {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #eef5e9;
+  color: #3a7d44;
+  display: grid;
+  place-items: center;
+}
+
+.modeCard h3 {
+  margin: 6px 0;
+  font-size: 18px;
+}
+
+.modeCard strong {
+  font-size: 18px;
+}
+
+.modeCard p {
+  color: #68706a;
+  margin-bottom: 0;
+}
+
+.divider {
+  height: 1px;
+  background: #eee7dd;
+  margin: 28px 0;
+}
+
+.slotGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.slotCard {
+  border: 1px solid #e3dcd2;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.slotCard:hover,
+.slotCard.active {
+  border-color: #3a7d44;
+  background: #f3f8ef;
+}
+
+.slotCard:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.slotCard strong,
+.slotCard small {
+  display: block;
+}
+
+.slotCard small {
+  color: #68706a;
+  margin-top: 2px;
+}
+
+.slotCard span {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 10px;
+  font-weight: 700;
+}
+
+.slotCard p {
+  margin: 8px 0 0;
+  color: #68706a;
+  font-size: 13px;
+}
+
+.infoBox {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #f5f8f1;
+  border-radius: 18px;
+  padding: 16px;
+  color: #526057;
+}
+
+.infoBox svg {
+  color: #3a7d44;
+  flex-shrink: 0;
+}
+
+.infoBox p {
+  margin: 0;
+}
+
+.summaryCard {
+  padding: 30px;
+  position: sticky;
+  top: 20px;
+}
+
+.summaryCard h2 {
+  margin: 0 0 24px;
+  font-size: 23px;
+}
+
+.summaryList {
+  display: grid;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #eee7dd;
+}
+
+.summaryList > div {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.summaryList svg {
+  color: #3a7d44;
+  background: #eef5e9;
+  border-radius: 50%;
+  padding: 8px;
+  width: 42px;
+  height: 42px;
+}
+
+.summaryList p {
+  margin: 3px 0 0;
+  color: #5e665f;
+}
+
+.totalBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 26px 0 20px;
+}
+
+.totalBox span {
+  font-weight: 700;
+}
+
+.totalBox strong {
+  font-size: 32px;
+  color: #3a7d44;
+}
+
+.payButton {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 17px 20px;
+  background: #3a7d44;
+  color: white;
+  font-size: 17px;
+  font-weight: 800;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  box-shadow: 0 12px 24px rgba(58, 125, 68, 0.25);
+}
+
+.secureText {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+}
+
+.safeBox,
+.whatsappBox {
+  border-radius: 18px;
+  padding: 18px;
+  margin-top: 18px;
+}
+
+.safeBox {
+  background: #f1f7ec;
+  display: flex;
+  gap: 14px;
+}
+
+.safeBox svg {
+  color: #3a7d44;
+  flex-shrink: 0;
+}
+
+.safeBox p,
+.whatsappBox p {
+  color: #5e665f;
+  margin: 5px 0 0;
+}
+
+.whatsappBox {
+  border: 1px solid #e9e2d8;
+}
+
+.whatsappBox a {
+  margin-top: 16px;
+  border: 1px solid #3a7d44;
+  border-radius: 999px;
+  padding: 13px;
+  color: #268c45;
+  font-weight: 800;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.whySection {
+  max-width: 1180px;
+  margin: 26px auto;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  text-align: center;
+}
+
+.whySection svg {
+  color: #3a7d44;
+}
+
+.whySection strong {
+  display: block;
+  margin: 8px 0;
+}
+
+.whySection p {
+  color: #68706a;
+  margin: 0;
+}
+
+footer {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  color: #5e665f;
+}
+
+footer div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+footer svg {
+  color: #3a7d44;
+}
+
+@media (max-width: 900px) {
+  .heroGrid,
+  .bookingGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .featuresTop,
+  .whySection,
+  .slotGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .metabolicVisual {
+    display: none;
+  }
+
+  .summaryCard {
+    position: static;
+  }
+
+  footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.calendarBox {
+  background: #ffffff;
+  border: 1px solid #e3dcd2;
+  border-radius: 22px;
+  padding: 22px;
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.calendarHeader strong {
+  font-size: 20px;
+}
+
+.calendarHeader small {
+  color: #68706a;
+}
+
+.weekDays,
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.weekDays {
+  margin-bottom: 10px;
+  color: #68706a;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.calendarDay,
+.emptyDay {
+  min-height: 72px;
+  border-radius: 16px;
+}
+
+.calendarDay {
+  border: 1px solid #eee7dd;
+  background: #fafafa;
+  color: #b6ada4;
+  cursor: not-allowed;
+}
+
+.calendarDay.available {
+  background: #f3f8ef;
+  color: #1f2a24;
+  cursor: pointer;
+  border-color: #d7e6cf;
+}
+
+.calendarDay.available:hover {
+  border-color: #3a7d44;
+  transform: translateY(-2px);
+}
+
+.calendarDay.active {
+  background: #3a7d44;
+  color: white;
+  border-color: #3a7d44;
+  box-shadow: 0 12px 24px rgba(58, 125, 68, 0.25);
+}
+
+.calendarDay span,
+.calendarDay small {
+  display: block;
+}
+
+.calendarDay span {
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.calendarDay small {
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.timeCard {
+  border: 1px solid #e3dcd2;
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  font-weight: 800;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s ease;
+}
+
+.timeCard:hover,
+.timeCard.active {
+  background: #3a7d44;
+  color: white;
+  border-color: #3a7d44;
+}
+
+.selectedDateTitle {
+  margin-bottom: 16px;
+  background: #f3f8ef;
+  color: #2e6b38;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+}
+
+.importantBox {
+  background: #fff8ed;
+  border: 1px solid #f0dfc5;
+}
+
+.importantBox svg {
+  color: #c47a2c;
+}
+
+.highlightedWhatsapp {
+  background: #f4fbf5;
+  border-color: #b8d8bd;
+}
+
+@media (max-width: 700px) {
+  .calendarHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .calendarDay,
+  .emptyDay {
+    min-height: 58px;
+  }
+
+  .calendarDay span {
+    font-size: 15px;
+  }
+
+  .calendarDay small {
+    font-size: 9px;
+  }
+
+  .timeGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+
+  .page {
+    padding: 16px;
+  }
+
+  .heroText h1 {
+    font-size: 36px;
+    line-height: 1.1;
+  }
+
+  .heroText p {
+    font-size: 15px;
+  }
+
+  .featuresTop {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .modeCard {
+    padding: 18px;
+  }
+
+  .modeCard h3 {
+    font-size: 16px;
+  }
+
+  .modeCard strong {
+    font-size: 16px;
+  }
+
+  .calendarDay {
+    min-height: 50px;
+    font-size: 14px;
+  }
+
+  .calendarDay span {
+    font-size: 14px;
+  }
+
+  .calendarDay small {
+    display: none; /* menos ruido visual */
+  }
+
+  .timeCard {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .summaryCard {
+    padding: 20px;
+  }
+
+  .totalBox strong {
+    font-size: 24px;
+  }
+
+  .payButton {
+    padding: 16px;
+    font-size: 16px;
+  }
+
+  .whySection {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+}
+
+@media (prefers-color-scheme: dark) {
+
+  body {
+    background: #0f1412;
+    color: #e7efe9;
+  }
+
+  .page {
+    background: linear-gradient(180deg, #0f1412, #151c18);
+  }
+
+  .bookingCard,
+  .summaryCard,
+  .calendarBox,
+  .whySection,
+  footer {
+    background: #1b2420;
+    border-color: #2c3a32;
+    color: #e7efe9;
+  }
+
+  .heroText h1 {
+    color: #ffffff;
+  }
+
+  .heroText p {
+    color: #b7c2bb;
+  }
+
+  .featuresTop small {
+    color: #8f9c94;
+  }
+
+  .modeCard {
+    background: #1f2a24;
+    border-color: #2f3d35;
+  }
+
+  .modeCard.active {
+    border-color: #3a7d44;
+  }
+
+  .calendarDay {
+    background: #1f2a24;
+    border-color: #2f3d35;
+    color: #88958d;
+  }
+
+  .calendarDay.available {
+    background: #22352a;
+    color: #e7efe9;
+  }
+
+  .calendarDay.active {
+    background: #3a7d44;
+    color: white;
+  }
+
+  .timeCard {
+    background: #1f2a24;
+    border-color: #2f3d35;
+    color: #e7efe9;
+  }
+
+  .timeCard.active {
+    background: #3a7d44;
+    color: white;
+  }
+
+  .summaryList svg {
+    background: #22352a;
+  }
+
+  .totalBox strong {
+    color: #5cc070;
+  }
+
+  .payButton {
+    background: #3a7d44;
+  }
+
+  .infoBox {
+    background: #22352a;
+    color: #cbd6cf;
+  }
+
+  .importantBox {
+    background: #3a2a18;
+    border-color: #5a3d1f;
+  }
+
+  .importantBox svg {
+    color: #e2a44c;
+  }
+
+  .whatsappBox {
+    border-color: #2f3d35;
+  }
+
+  .highlightedWhatsapp {
+    background: #22352a;
+    border-color: #3a7d44;
+  }
+
+  footer {
+    color: #9aa69f;
+  }
+}
