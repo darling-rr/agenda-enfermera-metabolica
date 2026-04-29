@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Calendar,
   Clock,
@@ -15,55 +15,202 @@ import {
   Activity,
   AlertCircle,
 } from "lucide-react";
+import { supabase } from "./supabaseClient";
 import "./App.css";
-
-const monthDays = [
-  { day: "Vie", fullDay: "Viernes", date: "1 mayo", number: 1, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Sáb", fullDay: "Sábado", date: "2 mayo", number: 2, times: ["09:00", "10:00", "11:00"] },
-  { day: "Lun", fullDay: "Lunes", date: "4 mayo", number: 4, times: ["18:00", "19:00", "20:00"] },
-  { day: "Mié", fullDay: "Miércoles", date: "6 mayo", number: 6, times: ["16:00", "17:00", "18:00", "19:00", "20:00"] },
-  { day: "Jue", fullDay: "Jueves", date: "7 mayo", number: 7, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Vie", fullDay: "Viernes", date: "8 mayo", number: 8, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Sáb", fullDay: "Sábado", date: "9 mayo", number: 9, times: ["09:00", "10:00", "11:00"] },
-  { day: "Lun", fullDay: "Lunes", date: "11 mayo", number: 11, times: ["18:00", "19:00", "20:00"] },
-  { day: "Mié", fullDay: "Miércoles", date: "13 mayo", number: 13, times: ["16:00", "17:00", "18:00", "19:00", "20:00"] },
-  { day: "Jue", fullDay: "Jueves", date: "14 mayo", number: 14, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Vie", fullDay: "Viernes", date: "15 mayo", number: 15, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Sáb", fullDay: "Sábado", date: "16 mayo", number: 16, times: ["09:00", "10:00", "11:00"] },
-  { day: "Lun", fullDay: "Lunes", date: "18 mayo", number: 18, times: ["18:00", "19:00", "20:00"] },
-  { day: "Mié", fullDay: "Miércoles", date: "20 mayo", number: 20, times: ["16:00", "17:00", "18:00", "19:00", "20:00"] },
-  { day: "Jue", fullDay: "Jueves", date: "21 mayo", number: 21, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Vie", fullDay: "Viernes", date: "22 mayo", number: 22, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Sáb", fullDay: "Sábado", date: "23 mayo", number: 23, times: ["09:00", "10:00", "11:00"] },
-  { day: "Lun", fullDay: "Lunes", date: "25 mayo", number: 25, times: ["18:00", "19:00", "20:00"] },
-  { day: "Mié", fullDay: "Miércoles", date: "27 mayo", number: 27, times: ["16:00", "17:00", "18:00", "19:00", "20:00"] },
-  { day: "Jue", fullDay: "Jueves", date: "28 mayo", number: 28, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Vie", fullDay: "Viernes", date: "29 mayo", number: 29, times: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"] },
-  { day: "Sáb", fullDay: "Sábado", date: "30 mayo", number: 30, times: ["09:00", "10:00", "11:00"] },
-];
-
-const calendarDays = Array.from({ length: 35 }, (_, index) => index + 1);
 
 const paymentLinks = {
   Online: "https://mpago.la/2put31d",
   Presencial: "https://mpago.la/1iQ4Suq",
 };
 
+const availability = {
+  1: ["18:00", "19:00", "20:00"], // Lunes
+  3: ["16:00", "17:00", "18:00", "19:00", "20:00"], // Miércoles
+  4: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"], // Jueves
+  5: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"], // Viernes
+  6: ["09:00", "10:00", "11:00"], // Sábado
+};
+
+const monthNames = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+
+const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+const shortDayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
+function formatDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function App() {
+  const today = useMemo(() => new Date(), []); 
   const [selectedMode, setSelectedMode] = useState("Online");
-  const [selectedDay, setSelectedDay] = useState(monthDays[0]);
-  const [selectedTime, setSelectedTime] = useState(monthDays[0].times[0]);
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState("");
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [loadingBookings, setLoadingBookings] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [patient, setPatient] = useState({ name: "", phone: "", email: "" });
 
   const price = selectedMode === "Presencial" ? "$40.000" : "$30.000";
   const paymentUrl = paymentLinks[selectedMode];
 
+
+  const calendarDays = useMemo(() => {
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const firstWeekDayMondayFirst = (firstDay.getDay() + 6) % 7;
+    const days = [];
+
+    for (let i = 0; i < firstWeekDayMondayFirst; i++) {
+      days.push(null);
+    }
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const dateKey = formatDateKey(date);
+      const times = availability[date.getDay()] || [];
+      const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const availableTimes = times.filter(
+        (time) => !bookedSlots.some((slot) => slot.date === dateKey && slot.time === time && slot.mode === selectedMode)
+      );
+
+      days.push({
+        date,
+        dateKey,
+        dayNumber: day,
+        fullDay: dayNames[date.getDay()],
+        shortDay: shortDayNames[date.getDay()],
+        times,
+        availableTimes,
+        isAvailable: !isPast && availableTimes.length > 0,
+      });
+    }
+
+    return days;
+  }, [currentMonth, currentYear, bookedSlots, selectedMode, today]);
+
+    const loadBookedSlots = async () => {
+    setLoadingBookings(true);
+    const { data, error } = await supabase
+      .from("appointments")
+      .select("date,time,mode,status");
+
+    if (error) {
+      console.error(error);
+      alert("No pude cargar las horas ocupadas desde Supabase.");
+    } else {
+      const activeBookings = data.filter((booking) => booking.status !== "cancelled");
+      setBookedSlots(activeBookings);
+    }
+
+    setLoadingBookings(false);
+  };
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    loadBookedSlots();
+  }, 0);
+
+  return () => clearTimeout(timer);
+}, []);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    const firstAvailableDay = calendarDays.find((day) => day?.isAvailable);
+
+    if (!selectedDate || !selectedDate.isAvailable) {
+      setSelectedDate(firstAvailableDay || null);
+      setSelectedTime(firstAvailableDay?.availableTimes[0] || "");
+      return;
+    }
+
+    const updatedSelectedDate = calendarDays.find(
+      (day) => day?.dateKey === selectedDate.dateKey
+    );
+
+    if (updatedSelectedDate) {
+      setSelectedDate(updatedSelectedDate);
+
+      if (!updatedSelectedDate.availableTimes.includes(selectedTime)) {
+        setSelectedTime(updatedSelectedDate.availableTimes[0] || "");
+      }
+    }
+  }, 0);
+
+  return () => clearTimeout(timer);
+}, [calendarDays, selectedDate, selectedTime]);
+
+
+
+  const changeMonth = (direction) => {
+    const newDate = new Date(currentYear, currentMonth + direction, 1);
+    setCurrentMonth(newDate.getMonth());
+    setCurrentYear(newDate.getFullYear());
+    setSelectedDate(null);
+    setSelectedTime("");
+  };
+
+  const handleDaySelection = (day) => {
+    if (!day?.isAvailable) return;
+    setSelectedDate(day);
+    setSelectedTime(day.availableTimes[0]);
+  };
+
+  const handlePatientChange = (event) => {
+    const { name, value } = event.target;
+    setPatient((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const selectedDateLabel = selectedDate
+    ? `${selectedDate.fullDay}, ${selectedDate.dayNumber} de ${monthNames[currentMonth]} ${currentYear}`
+    : "Selecciona una fecha";
+
   const whatsappMessage = encodeURIComponent(
-    `Hola, ya pagué mi evaluación metabólica ${selectedMode} para el ${selectedDay.fullDay} ${selectedDay.date} a las ${selectedTime} hrs. Te envío mi comprobante para confirmar la reserva.`
+    `Hola, ya pagué mi evaluación metabólica ${selectedMode} para el ${selectedDateLabel} a las ${selectedTime} hrs. Mi nombre es ${patient.name || "____"}. Te envío mi comprobante para confirmar la reserva.`
   );
 
-  const handleDaySelection = (dayInfo) => {
-    setSelectedDay(dayInfo);
-    setSelectedTime(dayInfo.times[0]);
+  const saveAppointment = async () => {
+    if (!selectedDate || !selectedTime) {
+      alert("Selecciona una fecha y hora antes de reservar.");
+      return;
+    }
+
+    if (!patient.name.trim() || !patient.phone.trim() || !patient.email.trim()) {
+      alert("Completa tu nombre, WhatsApp y correo antes de continuar.");
+      return;
+    }
+
+    setIsSaving(true);
+
+    const { error } = await supabase.from("appointments").insert([
+      {
+        name: patient.name.trim(),
+        phone: patient.phone.trim(),
+        email: patient.email.trim(),
+        date: selectedDate.dateKey,
+        date_label: selectedDateLabel,
+        time: selectedTime,
+        mode: selectedMode,
+        status: "pending_payment",
+      },
+    ]);
+
+    setIsSaving(false);
+
+    if (error) {
+      console.error(error);
+      alert("No se pudo reservar la hora. Intenta nuevamente o escríbeme por WhatsApp.");
+      return;
+    }
+
+    await loadBookedSlots();
+    window.open(paymentUrl, "_blank");
   };
 
   return (
@@ -123,10 +270,7 @@ function App() {
           </div>
 
           <div className="modeGrid">
-            <button
-              className={`modeCard ${selectedMode === "Online" ? "active" : ""}`}
-              onClick={() => setSelectedMode("Online")}
-            >
+            <button className={`modeCard ${selectedMode === "Online" ? "active" : ""}`} onClick={() => setSelectedMode("Online")}>
               <div className="check">✓</div>
               <div className="iconBubble"><Video size={28} /></div>
               <h3>Online</h3>
@@ -134,10 +278,7 @@ function App() {
               <p>Evaluación por videollamada</p>
             </button>
 
-            <button
-              className={`modeCard ${selectedMode === "Presencial" ? "active" : ""}`}
-              onClick={() => setSelectedMode("Presencial")}
-            >
+            <button className={`modeCard ${selectedMode === "Presencial" ? "active" : ""}`} onClick={() => setSelectedMode("Presencial")}>
               <div className="check">✓</div>
               <div className="iconBubble"><MapPin size={28} /></div>
               <h3>Presencial en Temuco</h3>
@@ -155,8 +296,12 @@ function App() {
 
           <div className="calendarBox">
             <div className="calendarHeader">
-              <strong>Mayo 2026</strong>
-              <small>Haz click en un día disponible</small>
+              <button className="monthButton" onClick={() => changeMonth(-1)}>‹</button>
+              <div>
+                <strong>{monthNames[currentMonth]} {currentYear}</strong>
+                <small>{loadingBookings ? "Cargando horas ocupadas..." : "Haz click en un día disponible"}</small>
+              </div>
+              <button className="monthButton" onClick={() => changeMonth(1)}>›</button>
             </div>
 
             <div className="weekDays">
@@ -164,24 +309,21 @@ function App() {
             </div>
 
             <div className="calendarGrid">
-              <div className="emptyDay"></div>
-              <div className="emptyDay"></div>
-              <div className="emptyDay"></div>
-              <div className="emptyDay"></div>
-              {calendarDays.slice(0, 31).map((number) => {
-                const dayInfo = monthDays.find((item) => item.number === number);
-                return (
+              {calendarDays.map((day, index) => (
+                day ? (
                   <button
-                    key={number}
-                    disabled={!dayInfo}
-                    onClick={() => dayInfo && handleDaySelection(dayInfo)}
-                    className={`calendarDay ${dayInfo ? "available" : ""} ${selectedDay.number === number ? "active" : ""}`}
+                    key={day.dateKey}
+                    disabled={!day.isAvailable}
+                    onClick={() => handleDaySelection(day)}
+                    className={`calendarDay ${day.isAvailable ? "available" : ""} ${selectedDate?.dateKey === day.dateKey ? "active" : ""}`}
                   >
-                    <span>{number}</span>
-                    {dayInfo && <small>{dayInfo.times.length} hrs</small>}
+                    <span>{day.dayNumber}</span>
+                    {day.isAvailable && <small>{day.availableTimes.length} hrs</small>}
                   </button>
-                );
-              })}
+                ) : (
+                  <div key={`empty-${index}`} className="emptyDay" />
+                )
+              ))}
             </div>
           </div>
 
@@ -193,26 +335,38 @@ function App() {
           </div>
 
           <div className="selectedDateTitle">
-            <Calendar size={20} /> {selectedDay.fullDay}, {selectedDay.date}
+            <Calendar size={20} /> {selectedDateLabel}
           </div>
 
           <div className="timeGrid">
-            {selectedDay.times.map((time) => (
-              <button
-                key={time}
-                onClick={() => setSelectedTime(time)}
-                className={`timeCard ${selectedTime === time ? "active" : ""}`}
-              >
-                <Clock size={16} /> {time}
-              </button>
-            ))}
+            {selectedDate?.availableTimes?.length ? (
+              selectedDate.availableTimes.map((time) => (
+                <button key={time} onClick={() => setSelectedTime(time)} className={`timeCard ${selectedTime === time ? "active" : ""}`}>
+                  <Clock size={16} /> {time}
+                </button>
+              ))
+            ) : (
+              <p className="noSlotsText">No hay horas disponibles para este día.</p>
+            )}
+          </div>
+
+          <div className="divider" />
+
+          <div className="stepHeader">
+            <span>4</span>
+            <h2>Completa tus datos</h2>
+          </div>
+
+          <div className="patientForm">
+            <input name="name" value={patient.name} onChange={handlePatientChange} placeholder="Nombre completo" />
+            <input name="phone" value={patient.phone} onChange={handlePatientChange} placeholder="WhatsApp" />
+            <input name="email" value={patient.email} onChange={handlePatientChange} placeholder="Correo electrónico" type="email" />
           </div>
 
           <div className="infoBox importantBox">
             <AlertCircle size={22} />
             <p>
-              Importante: después de pagar, toca el botón “Enviar comprobante”. El mensaje ya irá
-              con la fecha, hora y modalidad seleccionada para que pueda confirmar tu reserva.
+              Al presionar “Reservar y pagar”, tu hora queda tomada como pendiente de pago. Después debes enviar el comprobante por WhatsApp para confirmar definitivamente.
             </p>
           </div>
         </div>
@@ -232,14 +386,14 @@ function App() {
               <Calendar size={22} />
               <section>
                 <strong>Fecha</strong>
-                <p>{selectedDay.fullDay}, {selectedDay.date}</p>
+                <p>{selectedDateLabel}</p>
               </section>
             </div>
             <div>
               <Clock size={22} />
               <section>
                 <strong>Horario</strong>
-                <p>{selectedTime} hrs</p>
+                <p>{selectedTime ? `${selectedTime} hrs` : "Selecciona una hora"}</p>
               </section>
             </div>
           </div>
@@ -249,9 +403,9 @@ function App() {
             <strong>{price}</strong>
           </div>
 
-          <a href={paymentUrl} target="_blank" rel="noreferrer" className="payButton">
-            <Lock size={19} /> Pagar y reservar hora
-          </a>
+          <button onClick={saveAppointment} disabled={isSaving} className="payButton">
+            <Lock size={19} /> {isSaving ? "Reservando..." : "Reservar y pagar"}
+          </button>
           <p className="secureText">Luego envía el comprobante para confirmar tu cupo</p>
 
           <div className="safeBox">
@@ -265,11 +419,7 @@ function App() {
           <div className="whatsappBox highlightedWhatsapp">
             <strong>Paso final obligatorio</strong>
             <p>Después del pago, envía el comprobante para que pueda registrar tu fecha y hora.</p>
-            <a
-              href={`https://wa.me/56977415299?text=${whatsappMessage}`}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href={`https://wa.me/56977415299?text=${whatsappMessage}`} target="_blank" rel="noreferrer">
               <MessageCircle size={20} /> Enviar comprobante y confirmar
             </a>
           </div>
@@ -277,31 +427,15 @@ function App() {
       </section>
 
       <section className="whySection">
-        <div>
-          <UserRound size={34} />
-          <strong>Atención personalizada</strong>
-          <p>Cada evaluación es única y adaptada a ti.</p>
-        </div>
-        <div>
-          <Dna size={34} />
-          <strong>Basado en ciencia</strong>
-          <p>Enfoque en salud metabólica y estilo de vida.</p>
-        </div>
-        <div>
-          <ShieldCheck size={34} />
-          <strong>Espacio seguro</strong>
-          <p>Escucha activa y sin juicios.</p>
-        </div>
-        <div>
-          <Target size={34} />
-          <strong>Resultados reales</strong>
-          <p>Plan de acción claro y sostenible para ti.</p>
-        </div>
+        <div><UserRound size={34} /><strong>Atención personalizada</strong><p>Cada evaluación es única y adaptada a ti.</p></div>
+        <div><Dna size={34} /><strong>Basado en ciencia</strong><p>Enfoque en salud metabólica y estilo de vida.</p></div>
+        <div><ShieldCheck size={34} /><strong>Espacio seguro</strong><p>Escucha activa y sin juicios.</p></div>
+        <div><Target size={34} /><strong>Resultados reales</strong><p>Plan de acción claro y sostenible para ti.</p></div>
       </section>
 
       <footer>
         <div><HeartPulse size={22} /> Enfermera Metabólica</div>
-        <div>¿Dudas? Escríbeme por WhatsApp: +569 77415299</div>
+        <div>¿Dudas? Escríbeme por WhatsApp: +569 7741 5299</div>
         <div>Instagram: @enfermera.metabolica</div>
       </footer>
     </main>
