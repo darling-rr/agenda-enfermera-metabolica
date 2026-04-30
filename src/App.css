@@ -996,3 +996,17 @@ footer svg {
   cursor: not-allowed;
   box-shadow: none;
 }
+
+.payButton {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payButton:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.payButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
