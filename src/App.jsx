@@ -18,11 +18,6 @@ import {
 import { supabase } from "./supabaseClient";
 import "./App.css";
 
-const paymentLinks = {
-  Online: "https://mpago.la/2put31d",
-  Presencial: "https://mpago.la/1iQ4Suq",
-};
-
 const availability = {
   1: ["18:00", "19:00", "20:00"], // Lunes
   3: ["16:00", "17:00", "18:00", "19:00", "20:00"], // Miércoles
@@ -47,7 +42,7 @@ function formatDateKey(date) {
 }
 
 function App() {
-  const today = useMemo(() => new Date(), []); 
+  const today = new Date();
   const [selectedMode, setSelectedMode] = useState("Online");
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -57,12 +52,9 @@ function App() {
   const [loadingBookings, setLoadingBookings] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [patient, setPatient] = useState({ name: "", phone: "", email: "" });
-  const isFormValid =
-  patient.name && patient.phone && patient.email && selectedTime;
 
   const price = selectedMode === "Presencial" ? "$40.000" : "$30.000";
-  const paymentUrl = paymentLinks[selectedMode];
-
+  const priceNumber = selectedMode === "Presencial" ? 40000 : 30000;
 
   const calendarDays = useMemo(() => {
     const firstDay = new Date(currentYear, currentMonth, 1);
@@ -96,9 +88,29 @@ function App() {
     }
 
     return days;
-  }, [currentMonth, currentYear, bookedSlots, selectedMode, today]);
+  }, [currentMonth, currentYear, bookedSlots, selectedMode]);
 
-    const loadBookedSlots = async () => {
+  useEffect(() => {
+    loadBookedSlots();
+  }, []);
+
+  useEffect(() => {
+    const firstAvailableDay = calendarDays.find((day) => day?.isAvailable);
+    if (!selectedDate || !selectedDate.isAvailable) {
+      setSelectedDate(firstAvailableDay || null);
+      setSelectedTime(firstAvailableDay?.availableTimes[0] || "");
+    } else {
+      const updatedSelectedDate = calendarDays.find((day) => day?.dateKey === selectedDate.dateKey);
+      if (updatedSelectedDate) {
+        setSelectedDate(updatedSelectedDate);
+        if (!updatedSelectedDate.availableTimes.includes(selectedTime)) {
+          setSelectedTime(updatedSelectedDate.availableTimes[0] || "");
+        }
+      }
+    }
+  }, [calendarDays]);
+
+  const loadBookedSlots = async () => {
     setLoadingBookings(true);
     const { data, error } = await supabase
       .from("appointments")
@@ -114,41 +126,6 @@ function App() {
 
     setLoadingBookings(false);
   };
-  useEffect(() => {
-  const timer = setTimeout(() => {
-    loadBookedSlots();
-  }, 0);
-
-  return () => clearTimeout(timer);
-}, []);
-
-useEffect(() => {
-  const timer = setTimeout(() => {
-    const firstAvailableDay = calendarDays.find((day) => day?.isAvailable);
-
-    if (!selectedDate || !selectedDate.isAvailable) {
-      setSelectedDate(firstAvailableDay || null);
-      setSelectedTime(firstAvailableDay?.availableTimes[0] || "");
-      return;
-    }
-
-    const updatedSelectedDate = calendarDays.find(
-      (day) => day?.dateKey === selectedDate.dateKey
-    );
-
-    if (updatedSelectedDate) {
-      setSelectedDate(updatedSelectedDate);
-
-      if (!updatedSelectedDate.availableTimes.includes(selectedTime)) {
-        setSelectedTime(updatedSelectedDate.availableTimes[0] || "");
-      }
-    }
-  }, 0);
-
-  return () => clearTimeout(timer);
-}, [calendarDays, selectedDate, selectedTime]);
-
-
 
   const changeMonth = (direction) => {
     const newDate = new Date(currentYear, currentMonth + direction, 1);
@@ -190,29 +167,42 @@ useEffect(() => {
 
     setIsSaving(true);
 
-    const { error } = await supabase.from("appointments").insert([
-      {
-        name: patient.name.trim(),
-        phone: patient.phone.trim(),
-        email: patient.email.trim(),
-        date: selectedDate.dateKey,
-        date_label: selectedDateLabel,
-        time: selectedTime,
-        mode: selectedMode,
-        status: "pending_payment",
-      },
-    ]);
+    try {
+      const response = await fetch("/api/create-preference", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          patient: {
+            name: patient.name.trim(),
+            phone: patient.phone.trim(),
+            email: patient.email.trim(),
+          },
+          selectedMode,
+          selectedDate: {
+            dateKey: selectedDate.dateKey,
+            label: selectedDateLabel,
+          },
+          selectedTime,
+          price: priceNumber,
+        }),
+      });
 
-    setIsSaving(false);
+      const data = await response.json();
 
-    if (error) {
+      if (!response.ok) {
+        throw new Error(data.error || "No se pudo crear el pago.");
+      }
+
+      await loadBookedSlots();
+      window.location.href = data.init_point;
+    } catch (error) {
       console.error(error);
-      alert("No se pudo reservar la hora. Intenta nuevamente o escríbeme por WhatsApp.");
-      return;
+      alert("No se pudo iniciar el pago. Intenta nuevamente o escríbeme por WhatsApp.");
+    } finally {
+      setIsSaving(false);
     }
-
-    await loadBookedSlots();
-    window.open(paymentUrl, "_blank");
   };
 
   return (
@@ -405,22 +395,9 @@ useEffect(() => {
             <strong>{price}</strong>
           </div>
 
-          <p className="ctaText">
-  👉 Completa tus datos y presiona el botón para reservar tu hora y continuar al pago
-</p>
-
-        <button
-  onClick={saveAppointment}
-  disabled={!isFormValid || isSaving}
-  className="payButton"
->
-  <Lock size={19} />
-  {isSaving
-    ? "Reservando..."
-    : !isFormValid
-    ? "Completa tus datos"
-    : "Confirmar hora y pagar"}
-</button>
+          <button onClick={saveAppointment} disabled={isSaving} className="payButton">
+            <Lock size={19} /> {isSaving ? "Reservando..." : "Reservar y pagar"}
+          </button>
           <p className="secureText">Luego envía el comprobante para confirmar tu cupo</p>
 
           <div className="safeBox">
