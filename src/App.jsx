@@ -19,20 +19,19 @@ import { supabase } from "./supabaseClient";
 import "./App.css";
 
 const availability = {
-  1: ["18:00", "19:00", "20:00"], // Lunes
-  3: ["16:00", "17:00", "18:00", "19:00", "20:00"], // Miércoles
-  4: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"], // Jueves
-  5: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"], // Viernes
-  6: ["09:00", "10:00", "11:00"], // Sábado
+  1: ["18:00", "19:00", "20:00"],
+  3: ["16:00", "17:00", "18:00", "19:00", "20:00"],
+  4: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"],
+  5: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"],
+  6: ["09:00", "10:00", "11:00"],
 };
 
 const monthNames = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
 
 const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-const shortDayNames = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
 function formatDateKey(date) {
   const year = date.getFullYear();
@@ -41,11 +40,17 @@ function formatDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
+function getSlotDate(date, time) {
+  const [hours, minutes] = time.split(":").map(Number);
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes, 0, 0);
+}
+
 function App() {
-  const today = new Date();
+  const initialToday = new Date();
+
   const [selectedMode, setSelectedMode] = useState("Online");
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(initialToday.getMonth());
+  const [currentYear, setCurrentYear] = useState(initialToday.getFullYear());
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [bookedSlots, setBookedSlots] = useState([]);
@@ -56,7 +61,50 @@ function App() {
   const price = selectedMode === "Presencial" ? "$40.000" : "$30.000";
   const priceNumber = selectedMode === "Presencial" ? 40000 : 30000;
 
+  const isFormValid =
+    patient.name.trim() &&
+    patient.phone.trim() &&
+    patient.email.trim() &&
+    selectedDate &&
+    selectedTime;
+
+  const loadBookedSlots = async () => {
+    setLoadingBookings(true);
+
+    const now = new Date().toISOString();
+
+    const { data, error } = await supabase
+      .from("appointments")
+      .select("date,time,mode,status,expires_at");
+
+    if (error) {
+      console.error(error);
+      alert("No pude cargar las horas ocupadas desde Supabase.");
+    } else {
+      const activeBookings = data.filter((booking) => {
+        if (booking.status === "confirmed") return true;
+
+        if (
+          booking.status === "pending_payment" &&
+          booking.expires_at &&
+          booking.expires_at > now
+        ) {
+          return true;
+        }
+
+        return false;
+      });
+
+      setBookedSlots(activeBookings);
+    }
+
+    setLoadingBookings(false);
+  };
+
   const calendarDays = useMemo(() => {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
     const firstDay = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const firstWeekDayMondayFirst = (firstDay.getDay() + 6) % 7;
@@ -70,59 +118,35 @@ function App() {
       const date = new Date(currentYear, currentMonth, day);
       const dateKey = formatDateKey(date);
       const times = availability[date.getDay()] || [];
-      const isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const availableTimes = times.filter(
-        (time) => !bookedSlots.some((slot) => slot.date === dateKey && slot.time === time && slot.mode === selectedMode)
-      );
+
+      const isPastDate = date < todayStart;
+
+      const availableTimes = times.filter((time) => {
+        const slotDate = getSlotDate(date, time);
+
+        if (isPastDate) return false;
+        if (slotDate <= now) return false;
+
+        const isBooked = bookedSlots.some(
+          (slot) => slot.date === dateKey && slot.time === time
+        );
+
+        return !isBooked;
+      });
 
       days.push({
         date,
         dateKey,
         dayNumber: day,
         fullDay: dayNames[date.getDay()],
-        shortDay: shortDayNames[date.getDay()],
         times,
         availableTimes,
-        isAvailable: !isPast && availableTimes.length > 0,
+        isAvailable: availableTimes.length > 0,
       });
     }
 
     return days;
-  }, [currentMonth, currentYear, bookedSlots, selectedMode]);
-
-
-
-    const loadBookedSlots = async () => {
-    setLoadingBookings(true);
-
-const now = new Date().toISOString();
-
-const { data, error } = await supabase
-  .from("appointments")
-  .select("date,time,mode,status,expires_at");
-
-    if (error) {
-      console.error(error);
-      alert("No pude cargar las horas ocupadas desde Supabase.");
-    } else {
-const activeBookings = data.filter((booking) => {
-  if (booking.status === "confirmed") return true;
-
-  if (
-    booking.status === "pending_payment" &&
-    booking.expires_at &&
-    booking.expires_at > now
-  ) {
-    return true;
-  }
-
-  return false;
-});
-      setBookedSlots(activeBookings);
-    }
-
-    setLoadingBookings(false);
-  };
+  }, [currentMonth, currentYear, bookedSlots]);
 
   useEffect(() => {
     loadBookedSlots();
@@ -130,21 +154,25 @@ const activeBookings = data.filter((booking) => {
 
   useEffect(() => {
     const firstAvailableDay = calendarDays.find((day) => day?.isAvailable);
+
     if (!selectedDate || !selectedDate.isAvailable) {
       setSelectedDate(firstAvailableDay || null);
       setSelectedTime(firstAvailableDay?.availableTimes[0] || "");
-    } else {
-      const updatedSelectedDate = calendarDays.find((day) => day?.dateKey === selectedDate.dateKey);
-      if (updatedSelectedDate) {
-        setSelectedDate(updatedSelectedDate);
-        if (!updatedSelectedDate.availableTimes.includes(selectedTime)) {
-          setSelectedTime(updatedSelectedDate.availableTimes[0] || "");
-        }
+      return;
+    }
+
+    const updatedSelectedDate = calendarDays.find(
+      (day) => day?.dateKey === selectedDate.dateKey
+    );
+
+    if (updatedSelectedDate) {
+      setSelectedDate(updatedSelectedDate);
+
+      if (!updatedSelectedDate.availableTimes.includes(selectedTime)) {
+        setSelectedTime(updatedSelectedDate.availableTimes[0] || "");
       }
     }
-  }, [calendarDays]);
-
-
+  }, [calendarDays, selectedDate, selectedTime]);
 
   const changeMonth = (direction) => {
     const newDate = new Date(currentYear, currentMonth + direction, 1);
@@ -174,13 +202,8 @@ const activeBookings = data.filter((booking) => {
   );
 
   const saveAppointment = async () => {
-    if (!selectedDate || !selectedTime) {
-      alert("Selecciona una fecha y hora antes de reservar.");
-      return;
-    }
-
-    if (!patient.name.trim() || !patient.phone.trim() || !patient.email.trim()) {
-      alert("Completa tu nombre, WhatsApp y correo antes de continuar.");
+    if (!isFormValid) {
+      alert("Completa tus datos y selecciona fecha/hora antes de continuar.");
       return;
     }
 
@@ -377,7 +400,7 @@ const activeBookings = data.filter((booking) => {
           <div className="infoBox importantBox">
             <AlertCircle size={22} />
             <p>
-              Al presionar “Reservar y pagar”, tu hora queda tomada como pendiente de pago. Después debes enviar el comprobante por WhatsApp para confirmar definitivamente.
+              Al presionar “Reservar y pagar”, tu hora queda tomada como pendiente de pago por 30 minutos. Si no completas el pago, se libera automáticamente.
             </p>
           </div>
         </div>
@@ -414,24 +437,30 @@ const activeBookings = data.filter((booking) => {
             <strong>{price}</strong>
           </div>
 
-          <button onClick={saveAppointment} disabled={isSaving} className="payButton">
-            <Lock size={19} /> {isSaving ? "Reservando..." : "Reservar y pagar"}
+          <p className="ctaText">
+            Completa tus datos y presiona el botón para reservar tu hora y continuar al pago.
+          </p>
+
+          <button onClick={saveAppointment} disabled={!isFormValid || isSaving} className="payButton">
+            <Lock size={19} />
+            {isSaving ? "Reservando..." : !isFormValid ? "Completa tus datos" : "Reservar y pagar"}
           </button>
+
           <p className="secureText">Luego envía el comprobante para confirmar tu cupo</p>
 
           <div className="safeBox">
             <ShieldCheck size={30} />
             <div>
               <strong>Tu hora queda pre-reservada</strong>
-              <p>La reserva se confirma cuando envías el comprobante por WhatsApp.</p>
+              <p>La reserva se confirma automáticamente cuando el pago queda aprobado.</p>
             </div>
           </div>
 
           <div className="whatsappBox highlightedWhatsapp">
-            <strong>Paso final obligatorio</strong>
-            <p>Después del pago, envía el comprobante para que pueda registrar tu fecha y hora.</p>
+            <strong>Paso final recomendado</strong>
+            <p>Después del pago, también puedes enviar el comprobante por WhatsApp.</p>
             <a href={`https://wa.me/56977415299?text=${whatsappMessage}`} target="_blank" rel="noreferrer">
-              <MessageCircle size={20} /> Enviar comprobante y confirmar
+              <MessageCircle size={20} /> Enviar comprobante
             </a>
           </div>
         </aside>
