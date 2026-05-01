@@ -495,15 +495,22 @@ const availableTimes = times.filter((time) => {
     <HeartPulse size={22} /> Enfermera Metabólica
   </div>
 
-  <div>
-    ¿Dudas? Escríbeme por WhatsApp:
-    <br />
-    <a href="https://wa.me/56977415299" target="_blank" rel="noreferrer">
-      +56 9 7741 5299
-    </a>
-  </div>
+ <div className="contactBlock">
+  <p>¿Dudas?</p>
 
-  <div>Instagram: @enfermera.metabolica</div>
+  <a
+    href="https://wa.me/56977415299"
+    target="_blank"
+    rel="noreferrer"
+    className="whatsappLink"
+  >
+    <MessageCircle size={18} />
+    Escribir por WhatsApp
+  </a>
+
+  <p>Instagram: @enfermera.metabolica</p>
+</div>
+
 </footer>
     </main>
   );
