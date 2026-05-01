@@ -53,8 +53,8 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [patient, setPatient] = useState({ name: "", phone: "", email: "" });
 
-  const price = selectedMode === "Presencial" ? "$1.000" : "$30.000";
-  const priceNumber = selectedMode === "Presencial" ? 1.000 : 30000;
+  const price = selectedMode === "Presencial" ? "$1.000" : "$1.000";
+  const priceNumber = selectedMode === "Presencial" ? 1.000 : 1.000;
 
   const calendarDays = useMemo(() => {
     const firstDay = new Date(currentYear, currentMonth, 1);
