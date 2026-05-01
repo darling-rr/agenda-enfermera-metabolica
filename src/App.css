@@ -1010,3 +1010,22 @@ footer svg {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+.lowAvailabilityWarning {
+  margin: 12px 0;
+  padding: 12px;
+  background: linear-gradient(135deg, #fff4f4, #ffe4e4);
+  border: 1px solid #fca5a5;
+  border-radius: 10px;
+  color: #b91c1c;
+  font-weight: 600;
+  text-align: center;
+  font-size: 14px;
+  animation: pulseSoft 2s infinite;
+}
+
+@keyframes pulseSoft {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}

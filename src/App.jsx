@@ -383,10 +383,17 @@ const availableTimes = times.filter((time) => {
           <div className="selectedDateTitle">
             <Calendar size={20} /> {selectedDateLabel}
           </div>
-
+          
+          {selectedDate?.availableTimes?.length > 0 &&
+          selectedDate.availableTimes.length <= 2 && (
+          <div className="lowAvailabilityWarning">
+           ⚠️ Solo quedan {selectedDate.availableTimes.length} horas disponibles
+          </div>
+           )}
           <div className="timeGrid">
             {selectedDate?.availableTimes?.length ? (
               selectedDate.availableTimes.map((time) => (
+                
                 <button key={time} onClick={() => setSelectedTime(time)} className={`timeCard ${selectedTime === time ? "active" : ""}`}>
                   <Clock size={16} /> {time}
                 </button>
