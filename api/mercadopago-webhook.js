@@ -15,6 +15,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Método no permitido" });
   }
 
+  if (req.body?.type !== "payment") {
+  return res.status(200).json({ message: "Evento ignorado" });
+}
+
   try {
     console.log("Webhook recibido:", req.body);
 
