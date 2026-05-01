@@ -90,6 +90,25 @@ function App() {
     return days;
   }, [currentMonth, currentYear, bookedSlots, selectedMode]);
 
+
+
+    const loadBookedSlots = async () => {
+    setLoadingBookings(true);
+    const { data, error } = await supabase
+      .from("appointments")
+      .select("date,time,mode,status");
+
+    if (error) {
+      console.error(error);
+      alert("No pude cargar las horas ocupadas desde Supabase.");
+    } else {
+      const activeBookings = data.filter((booking) => booking.status !== "cancelled");
+      setBookedSlots(activeBookings);
+    }
+
+    setLoadingBookings(false);
+  };
+
   useEffect(() => {
     loadBookedSlots();
   }, []);
@@ -110,22 +129,7 @@ function App() {
     }
   }, [calendarDays]);
 
-  const loadBookedSlots = async () => {
-    setLoadingBookings(true);
-    const { data, error } = await supabase
-      .from("appointments")
-      .select("date,time,mode,status");
 
-    if (error) {
-      console.error(error);
-      alert("No pude cargar las horas ocupadas desde Supabase.");
-    } else {
-      const activeBookings = data.filter((booking) => booking.status !== "cancelled");
-      setBookedSlots(activeBookings);
-    }
-
-    setLoadingBookings(false);
-  };
 
   const changeMonth = (direction) => {
     const newDate = new Date(currentYear, currentMonth + direction, 1);
