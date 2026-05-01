@@ -20,6 +20,9 @@ export default async function handler(req, res) {
 
     const externalReference = crypto.randomUUID();
 
+    // La reserva pendiente se libera automáticamente después de 30 minutos
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+
     const { error } = await supabase.from("appointments").insert([
       {
         name: patient.name,
@@ -32,6 +35,7 @@ export default async function handler(req, res) {
         status: "pending_payment",
         external_reference: externalReference,
         payment_status: "created",
+        expires_at: expiresAt,
       },
     ]);
 
@@ -72,6 +76,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       init_point: result.init_point,
       external_reference: externalReference,
+      expires_at: expiresAt,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });

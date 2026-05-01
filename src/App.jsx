@@ -94,15 +94,30 @@ function App() {
 
     const loadBookedSlots = async () => {
     setLoadingBookings(true);
-    const { data, error } = await supabase
-      .from("appointments")
-      .select("date,time,mode,status");
+
+const now = new Date().toISOString();
+
+const { data, error } = await supabase
+  .from("appointments")
+  .select("date,time,mode,status,expires_at");
 
     if (error) {
       console.error(error);
       alert("No pude cargar las horas ocupadas desde Supabase.");
     } else {
-      const activeBookings = data.filter((booking) => booking.status !== "cancelled");
+const activeBookings = data.filter((booking) => {
+  if (booking.status === "confirmed") return true;
+
+  if (
+    booking.status === "pending_payment" &&
+    booking.expires_at &&
+    booking.expires_at > now
+  ) {
+    return true;
+  }
+
+  return false;
+});
       setBookedSlots(activeBookings);
     }
 
