@@ -421,29 +421,33 @@ const availableTimes = times.filter((time) => {
         <aside className="summaryCard">
           <h2>Resumen de tu reserva</h2>
 
-          <div className="summaryList">
-            <div>
-              {selectedMode === "Online" ? <Video size={22} /> : <MapPin size={22} />}
-              <section>
-                <strong>Modalidad</strong>
-                <p>{selectedMode}</p>
-              </section>
-            </div>
-           <div className="summaryItem">
-           <Calendar size={22} />
-          <div className="summaryText">
-          <strong>Fecha</strong>
-          <p>{selectedDateLabel}</p>
-          </div>
-          </div>
-            <div>
-              <Clock size={22} />
-              <section>
-                <strong>Horario</strong>
-                <p>{selectedTime ? `${selectedTime} hrs` : "Selecciona una hora"}</p>
-              </section>
-            </div>
-          </div>
+     <div className="summaryList">
+
+  <div className="summaryItem">
+    <Video size={22} />
+    <div className="summaryText">
+      <strong>Modalidad</strong>
+      <p>{selectedMode}</p>
+    </div>
+  </div>
+
+  <div className="summaryItem">
+    <Calendar size={22} />
+    <div className="summaryText">
+      <strong>Fecha</strong>
+      <p>{selectedDateLabel}</p>
+    </div>
+  </div>
+
+  <div className="summaryItem">
+    <Clock size={22} />
+    <div className="summaryText">
+      <strong>Horario</strong>
+      <p>{selectedTime} hrs</p>
+    </div>
+  </div>
+
+</div>
 
           <div className="totalBox">
             <span>Total a pagar</span>

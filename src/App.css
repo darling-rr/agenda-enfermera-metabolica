@@ -1060,4 +1060,13 @@ footer svg {
 .summaryText {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+}
+
+.summaryText strong {
+  margin: 0;
+}
+
+.summaryText p {
+  margin: 0;
 }
