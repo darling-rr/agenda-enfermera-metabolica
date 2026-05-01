@@ -65,7 +65,7 @@ export default async function handler(req, res) {
           pending: "https://agenda-enfermera-metabolica.vercel.app/",
         },
         notification_url:
-          "https://TU-LINK-VERCEL.vercel.app/api/mercadopago-webhook",
+          "https://agenda-enfermera-metabolica.vercel.app/api/mercadopago-webhook",
       },
     });
 
