@@ -1029,3 +1029,35 @@ footer svg {
   50% { transform: scale(1.02); }
   100% { transform: scale(1); }
 }
+
+.patientForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.patientForm input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: white;
+}
+
+.patientForm input:focus {
+  outline: none;
+  border: 1px solid #22c55e;
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.15);
+}
+
+.summaryItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.summaryText {
+  display: flex;
+  flex-direction: column;
+}

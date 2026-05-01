@@ -435,13 +435,13 @@ const availableTimes = times.filter((time) => {
                 <p>{selectedMode}</p>
               </section>
             </div>
-            <div>
-              <Calendar size={22} />
-              <section>
-                <strong>Fecha</strong>
-                <p>{selectedDateLabel}</p>
-              </section>
-            </div>
+           <div className="summaryItem">
+           <Calendar size={22} />
+          <div className="summaryText">
+          <strong>Fecha</strong>
+          <p>{selectedDateLabel}</p>
+          </div>
+          </div>
             <div>
               <Clock size={22} />
               <section>
