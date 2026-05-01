@@ -139,12 +139,6 @@ const availableTimes = times.filter((time) => {
   return !isBooked;
 });
 
-        const isBooked = bookedSlots.some(
-          (slot) => slot.date === dateKey && slot.time === time
-        );
-
-        return !isBooked;
-      });
 
       days.push({
         date,
