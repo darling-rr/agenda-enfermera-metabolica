@@ -121,11 +121,23 @@ function App() {
 
       const isPastDate = date < todayStart;
 
-      const availableTimes = times.filter((time) => {
-        const slotDate = getSlotDate(date, time);
+const bufferMinutes = 120; // 2 horas
+const bufferLimit = new Date(now.getTime() + bufferMinutes * 60000);
 
-        if (isPastDate) return false;
-        if (slotDate <= now) return false;
+const availableTimes = times.filter((time) => {
+  const slotDate = getSlotDate(date, time);
+
+  if (isPastDate) return false;
+
+  // 🔥 NUEVO: aplica buffer
+  if (slotDate <= bufferLimit) return false;
+
+  const isBooked = bookedSlots.some(
+    (slot) => slot.date === dateKey && slot.time === time
+  );
+
+  return !isBooked;
+});
 
         const isBooked = bookedSlots.some(
           (slot) => slot.date === dateKey && slot.time === time
