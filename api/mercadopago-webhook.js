@@ -20,16 +20,33 @@ export default async function handler(req, res) {
 
     const paymentId =
       req.body?.data?.id ||
+      req.body?.resource ||
       req.body?.id ||
       req.query?.id ||
       req.query?.["data.id"];
 
     if (!paymentId) {
+      console.log("Webhook sin paymentId:", req.body);
       return res.status(200).json({ message: "Sin paymentId" });
     }
 
     const payment = new Payment(client);
-    const paymentData = await payment.get({ id: paymentId });
+
+    let paymentData;
+
+    try {
+      paymentData = await payment.get({ id: paymentId });
+    } catch (error) {
+      console.log("No se encontró el pago o no es un payment válido:", {
+        paymentId,
+        body: req.body,
+        error,
+      });
+
+      return res.status(200).json({
+        message: "Notificación recibida, pero no corresponde a un pago válido",
+      });
+    }
 
     console.log("Pago consultado:", paymentData);
 
@@ -37,26 +54,37 @@ export default async function handler(req, res) {
     const paymentStatus = paymentData.status;
 
     if (!externalReference) {
+      console.log("Pago sin external_reference:", paymentData);
       return res.status(200).json({ message: "Sin external_reference" });
     }
 
-    const newStatus = paymentStatus === "approved" ? "confirmed" : "pending_payment";
+    const newStatus =
+      paymentStatus === "approved" ? "confirmed" : "pending_payment";
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("appointments")
       .update({
         status: newStatus,
         payment_status: paymentStatus,
         payment_id: String(paymentId),
       })
-      .eq("external_reference", externalReference);
+      .eq("external_reference", externalReference)
+      .select();
 
     if (error) {
       console.error("Error Supabase:", error);
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json({ message: "Webhook procesado" });
+    console.log("Reserva actualizada:", data);
+
+    return res.status(200).json({
+      message: "Webhook procesado",
+      paymentId,
+      externalReference,
+      paymentStatus,
+      newStatus,
+    });
   } catch (error) {
     console.error("Error webhook:", error);
     return res.status(500).json({ error: error.message });
