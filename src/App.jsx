@@ -490,11 +490,21 @@ const availableTimes = times.filter((time) => {
         <div><Target size={34} /><strong>Resultados reales</strong><p>Plan de acción claro y sostenible para ti.</p></div>
       </section>
 
-      <footer>
-        <div><HeartPulse size={22} /> Enfermera Metabólica</div>
-        <div>¿Dudas? Escríbeme por WhatsApp: +569 7741 5299</div>
-        <div>Instagram: @enfermera.metabolica</div>
-      </footer>
+<footer>
+  <div className="footerBrand">
+    <HeartPulse size={22} /> Enfermera Metabólica
+  </div>
+
+  <div>
+    ¿Dudas? Escríbeme por WhatsApp:
+    <br />
+    <a href="https://wa.me/56977415299" target="_blank" rel="noreferrer">
+      +56 9 7741 5299
+    </a>
+  </div>
+
+  <div>Instagram: @enfermera.metabolica</div>
+</footer>
     </main>
   );
 }
