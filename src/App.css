@@ -296,23 +296,26 @@ footer {
 .infoBox {
   margin-top: 24px;
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+
   background: #f5f8f1;
   border-radius: 18px;
   padding: 16px;
   color: #526057;
-}
 
+  border: 1px solid #dbe7d8; 
+}
 .infoBox svg {
   color: #3a7d44;
-  flex-shrink: 0;
 }
 
 .infoBox p {
   margin: 0;
+  max-width: 280px; /* 🔥 hace que se vea más elegante en mobile */
 }
-
 .summaryCard {
   padding: 30px;
   position: sticky;
@@ -1106,4 +1109,11 @@ footer a {
   padding: 10px 18px;
   border-radius: 999px;
   border: 1px solid #c8e6c9;
+}
+
+.secureText {
+  font-size: 13px;
+  color: #7a8a80;
+  text-align: center;
+  margin-top: 8px;
 }

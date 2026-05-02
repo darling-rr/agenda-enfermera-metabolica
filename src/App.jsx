@@ -413,7 +413,9 @@ const availableTimes = times.filter((time) => {
           <div className="infoBox importantBox">
             <AlertCircle size={22} />
             <p>
-              Al presionar “Reservar y pagar”, tu hora queda tomada como pendiente de pago por 30 minutos. Si no completas el pago, se libera automáticamente.
+             Al presionar “Reservar y pagar”, tu hora queda reservada por 30 minutos.
+
+⚠️ Si no completas el pago en ese tiempo, el cupo se libera automáticamente.
             </p>
           </div>
         </div>
@@ -460,19 +462,24 @@ const availableTimes = times.filter((time) => {
 
           <button onClick={saveAppointment} disabled={!isFormValid || isSaving} className="payButton">
             <Lock size={19} />
-            {isSaving ? "Reservando..." : !isFormValid ? "Completa tus datos" : "Reservar y pagar"}
+            {isSaving ? "Reservando..." : !isFormValid ? "Completa tus datos" : "Reservar y asegurar mi cupo"}
           </button>
+
+          <p className="secureText">
+  🔒 Pago seguro con Mercado Pago
+</p>
 
           <p className="secureText">Luego envía el comprobante para confirmar tu cupo</p>
 
-          <div className="safeBox">
-            <ShieldCheck size={30} />
-            <div>
-              <strong>Tu hora queda pre-reservada</strong>
-              <p>La reserva se confirma automáticamente cuando el pago queda aprobado.</p>
-            </div>
-          </div>
-
+      <div className="infoBox">
+  <Shield size={24} />
+  <div className="infoText">
+    <strong>Tu hora queda pre-reservada</strong>
+    <p>
+      La reserva se confirma automáticamente cuando el pago queda aprobado.
+    </p>
+  </div>
+</div>
           <div className="whatsappBox highlightedWhatsapp">
             <strong>Paso final recomendado</strong>
             <p>Después del pago, también puedes enviar el comprobante por WhatsApp.</p>
