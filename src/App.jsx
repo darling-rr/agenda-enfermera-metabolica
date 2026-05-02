@@ -472,7 +472,7 @@ const availableTimes = times.filter((time) => {
           <p className="secureText">Luego envía el comprobante para confirmar tu cupo</p>
 
       <div className="infoBox">
-  <Shield size={24} />
+  <ShieldCheck size={24} />
   <div className="infoText">
     <strong>Tu hora queda pre-reservada</strong>
     <p>
