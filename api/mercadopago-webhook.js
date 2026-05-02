@@ -1,5 +1,8 @@
 import { MercadoPagoConfig, Payment } from "mercadopago";
 import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const client = new MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGOACCESSTOKEN,
@@ -15,12 +18,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Método no permitido" });
   }
 
-  if (req.body?.type !== "payment") {
-  return res.status(200).json({ message: "Evento ignorado" });
-}
-
   try {
     console.log("Webhook recibido:", req.body);
+
+    if (req.body?.type !== "payment") {
+      return res.status(200).json({ message: "Evento ignorado" });
+    }
 
     const paymentId =
       req.body?.data?.id ||
@@ -52,8 +55,6 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log("Pago consultado:", paymentData);
-
     const externalReference = paymentData.external_reference;
     const paymentStatus = paymentData.status;
 
@@ -65,7 +66,7 @@ export default async function handler(req, res) {
     const newStatus =
       paymentStatus === "approved" ? "confirmed" : "pending_payment";
 
-    const { data, error } = await supabase
+    const { data: updatedAppointments, error: updateError } = await supabase
       .from("appointments")
       .update({
         status: newStatus,
@@ -75,12 +76,50 @@ export default async function handler(req, res) {
       .eq("external_reference", externalReference)
       .select();
 
-    if (error) {
-      console.error("Error Supabase:", error);
-      return res.status(500).json({ error: error.message });
+    if (updateError) {
+      console.error("Error Supabase:", updateError);
+      return res.status(500).json({ error: updateError.message });
     }
 
-    console.log("Reserva actualizada:", data);
+    console.log("Reserva actualizada:", updatedAppointments);
+
+    if (paymentStatus === "approved" && updatedAppointments?.length > 0) {
+      const appointment = updatedAppointments[0];
+
+      try {
+        await resend.emails.send({
+          from: "Enfermera Metabólica <onboarding@resend.dev>",
+          to: appointment.email,
+          subject: "Tu hora está confirmada 💚",
+          html: `
+            <div style="font-family: Arial, sans-serif; color: #1f2a24; line-height: 1.6;">
+              <h2 style="color: #2f7d46;">Tu evaluación metabólica está confirmada 💚</h2>
+
+              <p>Hola ${appointment.name || ""},</p>
+
+              <p>Tu hora quedó confirmada correctamente.</p>
+
+              <div style="background: #f3f8ef; border: 1px solid #dbe7d8; border-radius: 12px; padding: 16px; margin: 20px 0;">
+                <p><strong>Fecha:</strong> ${appointment.date_label}</p>
+                <p><strong>Hora:</strong> ${appointment.time} hrs</p>
+                <p><strong>Modalidad:</strong> ${appointment.mode}</p>
+              </div>
+
+              <p>Si tienes dudas, puedes escribirme por WhatsApp.</p>
+
+              <p style="margin-top: 24px;">
+                Con cariño,<br/>
+                <strong>Enfermera Metabólica</strong>
+              </p>
+            </div>
+          `,
+        });
+
+        console.log("Correo enviado a:", appointment.email);
+      } catch (emailError) {
+        console.error("Error enviando correo:", emailError);
+      }
+    }
 
     return res.status(200).json({
       message: "Webhook procesado",
