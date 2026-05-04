@@ -58,8 +58,8 @@ function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [patient, setPatient] = useState({ name: "", phone: "", email: "" });
 
-  const price = selectedMode === "Presencial" ? "$1000" : "$1000";
-  const priceNumber = selectedMode === "Presencial" ? 1000 : 1000;
+  const price = selectedMode === "Presencial" ? "$30.000" : "$40.000";
+  const priceNumber = selectedMode === "Presencial" ? 30000 : 40000;
 
   const isFormValid =
     patient.name.trim() &&
