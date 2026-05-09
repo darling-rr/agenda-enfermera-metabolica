@@ -317,8 +317,8 @@ const availableTimes = times.filter((time) => {
     </p>
 
     <div className="aboutPoints">
-      <div>✓ Enfermera universitaria</div>
-      <div>✓ Magíster UFRO</div>
+      <div>✓ Enfermera con Magíster en Gestión del Cuidado</div>
+      <div>✓ Docente clínica universitaria</div>
       <div>✓ Atención online personalizada</div>
       <div>✓ Enfoque en hábitos y salud metabólica</div>
     </div>
@@ -367,7 +367,39 @@ const availableTimes = times.filter((time) => {
 
   </div>
 </section>
+<section className="symptomsSection">
+  <div className="symptomsHeader">
+    <span>Señales frecuentes</span>
 
+    <h2>¿Te identificas con esto?</h2>
+
+    <p>
+      Muchas veces el cuerpo da señales antes de que aparezcan enfermedades más avanzadas.
+    </p>
+  </div>
+
+  <div className="symptomsGrid">
+    <div className="symptomItem">Cansancio constante</div>
+    <div className="symptomItem">Ansiedad por comer</div>
+    <div className="symptomItem">Dificultad para bajar de peso</div>
+    <div className="symptomItem">Sueño poco reparador</div>
+    <div className="symptomItem">Inflamación abdominal</div>
+    <div className="symptomItem">Hambre frecuente</div>
+    <div className="symptomItem">Estrés constante</div>
+    <div className="symptomItem">Resistencia a la insulina</div>
+  </div>
+</section>
+
+<section className="transitionSection">
+  <div className="transitionContent">
+    <h2>Tu cuerpo está intentando decirte algo.</h2>
+
+    <p>
+      Entender tu metabolismo puede ser el primer paso para mejorar tu energía,
+      tus hábitos y tu salud a largo plazo.
+    </p>
+  </div>
+</section>
       <section className="bookingGrid">
         <div className="bookingCard">
           <div className="stepHeader">
