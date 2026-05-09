@@ -6,6 +6,7 @@ import {
   Video,
   MessageCircle,
   HeartPulse,
+  Camera,
   ShieldCheck,
   Target,
   FlaskConical,
@@ -14,6 +15,7 @@ import {
   Dna,
   Activity,
   AlertCircle,
+
 } from "lucide-react";
 import { supabase } from "./supabaseClient";
 import "./App.css";
@@ -560,7 +562,7 @@ const availableTimes = times.filter((time) => {
 
           <button onClick={saveAppointment} disabled={!isFormValid || isSaving} className="payButton">
             <Lock size={19} />
-            {isSaving ? "Reservando..." : !isFormValid ? "Completa tus datos" : "Reservar y asegurar mi cupo"}
+            {isSaving ? "Reservando..." : !isFormValid ? "Completa tus datos" : "Comenzar mi evaluación"}
           </button>
 
           <p className="secureText">
@@ -657,36 +659,66 @@ const availableTimes = times.filter((time) => {
     </div>
   </div>
 </section>
+<footer className="footer">
 
-      <section className="whySection">
-        <div><UserRound size={34} /><strong>Atención personalizada</strong><p>Cada evaluación es única y adaptada a ti.</p></div>
-        <div><Dna size={34} /><strong>Basado en ciencia</strong><p>Enfoque en salud metabólica y estilo de vida.</p></div>
-        <div><ShieldCheck size={34} /><strong>Espacio seguro</strong><p>Escucha activa y sin juicios.</p></div>
-        <div><Target size={34} /><strong>Resultados reales</strong><p>Plan de acción claro y sostenible para ti.</p></div>
-      </section>
+  <div className="footerLeft">
+    <div className="footerLogo">
+      <HeartPulse size={78} strokeWidth={2.2} />
 
-<footer>
-  <div className="footerBrand">
-    <HeartPulse size={22} /> Enfermera Metabólica
+      <h3>
+        Enfermera<br />
+        Metabólica
+      </h3>
+    </div>
+
+    <div className="footerDivider"></div>
+
+    <p className="footerDescription">
+      Salud metabólica,<br />
+      prevención y educación<br />
+      basada en evidencia.
+    </p>
   </div>
 
- <div className="contactBlock">
-  <p>¿Dudas?</p>
+  <div className="footerCard">
 
-  <a
-    href="https://wa.me/56977415299"
-    target="_blank"
-    rel="noreferrer"
-    className="whatsappLink"
-  >
-    <MessageCircle size={18} />
-    Escribir por WhatsApp
-  </a>
+    <div className="footerSocials">
 
-  <p>Instagram: @enfermera.metabolica</p>
-</div>
+      <a
+        href="https://instagram.com/enfermera.metabolica"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Camera size={24} />
+        Instagram
+      </a>
+
+      <a
+        href="https://wa.me/56977415299"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <MessageCircle size={24} />
+        WhatsApp
+      </a>
+
+    </div>
+
+    <p>Atención online para todo Chile</p>
+
+    <div className="footerLine"></div>
+
+    <small>© 2026 Enfermera Metabólica</small>
+
+  </div>
 
 </footer>
+
+
+
+
+
+
 
 <a
   className="floatingWhatsapp"
