@@ -625,6 +625,39 @@ const availableTimes = times.filter((time) => {
   </div>
 </section>
 
+<section className="testimonialsSection">
+  <div className="testimonialsHeader">
+    <span>Experiencias</span>
+    <h2>Lo que más valoran las personas</h2>
+    <p>
+      Acompañamiento claro, cercano y enfocado en entender lo que está pasando en tu cuerpo.
+    </p>
+  </div>
+
+  <div className="testimonialsGrid">
+    <div className="testimonialCard">
+      <p>
+        “Por primera vez sentí que alguien me explicó mis exámenes de forma clara y sin juzgarme.”
+      </p>
+     
+    </div>
+
+    <div className="testimonialCard">
+      <p>
+        “Me ayudó a entender que no era solo falta de voluntad, sino que había señales metabólicas importantes.”
+      </p>
+      
+    </div>
+
+    <div className="testimonialCard">
+      <p>
+        “Me sentí escuchada y con un plan mucho más realista para empezar a mejorar mis hábitos.”
+      </p>
+   
+    </div>
+  </div>
+</section>
+
       <section className="whySection">
         <div><UserRound size={34} /><strong>Atención personalizada</strong><p>Cada evaluación es única y adaptada a ti.</p></div>
         <div><Dna size={34} /><strong>Basado en ciencia</strong><p>Enfoque en salud metabólica y estilo de vida.</p></div>
@@ -654,6 +687,16 @@ const availableTimes = times.filter((time) => {
 </div>
 
 </footer>
+
+<a
+  className="floatingWhatsapp"
+  href="https://wa.me/56977415299?text=Hola%20Darling%2C%20quiero%20informaci%C3%B3n%20sobre%20la%20evaluaci%C3%B3n%20metab%C3%B3lica"
+  target="_blank"
+  rel="noreferrer"
+>
+  <MessageCircle size={24} />
+  <span>WhatsApp</span>
+</a>
     </main>
   );
 }

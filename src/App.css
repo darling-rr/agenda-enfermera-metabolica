@@ -1401,3 +1401,102 @@ footer a {
     font-size: 38px;
   }
 }
+
+.floatingWhatsapp {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #3a7d44;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+  transition: 0.2s ease;
+}
+
+.floatingWhatsapp:hover {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 700px) {
+  .floatingWhatsapp {
+    right: 18px;
+    bottom: 18px;
+    padding: 14px;
+  }
+
+  .floatingWhatsapp span {
+    display: none;
+  }
+}
+
+.testimonialsSection {
+  max-width: 1180px;
+  margin: 100px auto;
+  padding: 0 24px;
+}
+
+.testimonialsHeader {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.testimonialsHeader span {
+  color: #3a7d44;
+  font-weight: 600;
+}
+
+.testimonialsHeader h2 {
+  font-size: 46px;
+  margin: 14px 0;
+  color: #1e1f1e;
+}
+
+.testimonialsHeader p {
+  max-width: 720px;
+  margin: 0 auto;
+  color: #5e665f;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.testimonialsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.testimonialCard {
+  background: white;
+  border: 1px solid #e7e3dc;
+  border-radius: 24px;
+  padding: 32px;
+}
+
+.testimonialCard p {
+  color: #4b524c;
+  line-height: 1.8;
+  font-size: 17px;
+  margin-bottom: 24px;
+}
+
+.testimonialCard strong {
+  color: #2f6f3b;
+  font-size: 15px;
+}
+
+@media (max-width: 900px) {
+  .testimonialsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonialsHeader h2 {
+    font-size: 36px;
+  }
+}
