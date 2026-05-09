@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { supabase } from "./supabaseClient";
 import "./App.css";
-import darling from './assets/darling.png'
+import darling from './assets/Darling.png'
 
 const availability = {
   1: ["18:00", "19:00", "20:00"],
