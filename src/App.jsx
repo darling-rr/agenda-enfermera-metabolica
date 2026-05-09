@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { supabase } from "./supabaseClient";
 import "./App.css";
+import darling from './assets/darling.png'
 
 const availability = {
   1: ["18:00", "19:00", "20:00"],
@@ -264,11 +265,10 @@ const availableTimes = times.filter((time) => {
         <div className="heroGrid">
           <div className="heroText">
             <h1>
-              Agenda tu evaluación <span>metabólica</span>
+              Entiende qué está afectando tu <span> metabolismo</span>
             </h1>
             <p>
-              Una evaluación personalizada para entender qué puede estar influyendo en tu peso,
-              energía, ansiedad, sueño y salud cardiometabólica.
+              Evaluación personalizada para personas con fatiga, resistencia a la insulina, ansiedad alimentaria, dificultad para bajar de peso y  síntomas relacionados con tu metabolismo.
             </p>
 
             <div className="featuresTop">
@@ -279,8 +279,8 @@ const availableTimes = times.filter((time) => {
               </div>
               <div>
                 <Target size={24} />
-                <strong>Evaluación completa</strong>
-                <small>Personalizada para ti</small>
+                <strong>Plan personalizado</strong>
+                <small>Basado en tus síntomas y objetivos</small>
               </div>
               <div>
                 <ShieldCheck size={24} />
@@ -301,6 +301,72 @@ const availableTimes = times.filter((time) => {
           </div>
         </div>
       </section>
+      <section className="aboutSection">
+  <div className="aboutImage">
+    <img src={darling} alt="Darling - Enfermera metabólica" />
+  </div>
+
+  <div className="aboutContent">
+    <span className="aboutBadge">Sobre mí</span>
+
+    <h2>Hola, soy Darling 👋</h2>
+
+    <p>
+      Enfermera con enfoque en salud metabólica y prevención.
+      Mi objetivo es ayudarte a entender qué está ocurriendo en tu cuerpo desde una mirada integral, basada en evidencia y adaptada a tu realidad.
+    </p>
+
+    <div className="aboutPoints">
+      <div>✓ Enfermera universitaria</div>
+      <div>✓ Magíster UFRO</div>
+      <div>✓ Atención online personalizada</div>
+      <div>✓ Enfoque en hábitos y salud metabólica</div>
+    </div>
+  </div>
+</section>
+
+<section className="includesSection">
+  <div className="includesHeader">
+    <span>Tu evaluación</span>
+    <h2>¿Qué incluye?</h2>
+
+    <p>
+      Una atención enfocada en entender tu salud metabólica desde una mirada integral y personalizada.
+    </p>
+  </div>
+
+  <div className="includesGrid">
+
+    <div className="includeCard">
+      <h3>Revisión de síntomas y hábitos</h3>
+      <p>
+        Analizamos señales como fatiga, ansiedad alimentaria, sueño, energía y estilo de vida.
+      </p>
+    </div>
+
+    <div className="includeCard">
+      <h3>Interpretación de exámenes</h3>
+      <p>
+        Revisamos tus exámenes metabólicos para ayudarte a entender qué está ocurriendo en tu cuerpo.
+      </p>
+    </div>
+
+    <div className="includeCard">
+      <h3>Orientación personalizada</h3>
+      <p>
+        Recomendaciones adaptadas a tus síntomas, objetivos y contexto personal.
+      </p>
+    </div>
+
+    <div className="includeCard">
+      <h3>Enfoque basado en evidencia</h3>
+      <p>
+        Información clara y respaldada científicamente, sin planes extremos ni soluciones mágicas.
+      </p>
+    </div>
+
+  </div>
+</section>
 
       <section className="bookingGrid">
         <div className="bookingCard">
@@ -489,6 +555,43 @@ const availableTimes = times.filter((time) => {
           </div>
         </aside>
       </section>
+
+      <section className="faqSection">
+  <div className="faqHeader">
+    <span>Preguntas frecuentes</span>
+    <h2>Resolvamos tus dudas</h2>
+  </div>
+
+  <div className="faqGrid">
+    <div className="faqItem">
+      <h3>¿Necesito tener exámenes?</h3>
+      <p>
+        No necesariamente. Si tienes exámenes recientes podemos analizarlos, pero también puedes agendar aunque aún no tengas.
+      </p>
+    </div>
+
+    <div className="faqItem">
+      <h3>¿La atención es online?</h3>
+      <p>
+        Sí. Puedes atenderte desde cualquier ciudad de Chile mediante videollamada.
+      </p>
+    </div>
+
+    <div className="faqItem">
+      <h3>¿Cuánto dura la evaluación?</h3>
+      <p>
+        La atención tiene una duración aproximada de 60 minutos.
+      </p>
+    </div>
+
+    <div className="faqItem">
+      <h3>¿La evaluación reemplaza una consulta médica?</h3>
+      <p>
+        No. La evaluación tiene un enfoque educativo y preventivo complementario al seguimiento médico.
+      </p>
+    </div>
+  </div>
+</section>
 
       <section className="whySection">
         <div><UserRound size={34} /><strong>Atención personalizada</strong><p>Cada evaluación es única y adaptada a ti.</p></div>
